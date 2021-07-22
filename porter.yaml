@@ -131,6 +131,9 @@ parameters:
     description: "The name of the created KeyVault."
     source:
       output: keyvault_name
+    applyTo:
+      - "upgrade"
+      - "uninstall"
 
 outputs:
   - name: random_string
