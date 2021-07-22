@@ -6,6 +6,11 @@ random_string() {
         cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-8} | head -n 1 | tr '[:upper:]' '[:lower:]'
 }
 
+random-string() {
+  # remove the damned space
+        cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-8} | head -n 1 | tr '[:upper:]' '[:lower:]'
+}
+
 install() {
   echo Hello World
 }
