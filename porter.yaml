@@ -57,14 +57,14 @@ install:
         - name: random_string
           regex: "(.*)"
 
-  # - exec:
-  #     description: "Setting random string...."
-  #     command: ./helpers.sh
-  #     arguments:
-  #       - random-string
-  #     outputs:
-  #       - name: random_string
-  #         regex: "(.*)"
+  - exec:
+      description: "Setting random string...."
+      command: ./helpers.sh
+      arguments:
+        - random-string
+      outputs:
+        - name: random_string
+          regex: "(.*)"
 
   - az:
       description: "Creating the KeyVault for DataBricks credentials..."
