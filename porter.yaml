@@ -48,13 +48,23 @@ install:
         - "{{bundle.parameters.AZURE_GROUP_REGION}}"
 
   - exec:
+      command: bash
       description: "Setting random string...."
-      command: ./helpers.sh
       arguments:
+        - ./helpers.sh
         - random_string
       outputs:
         - name: random_string
           regex: "(.*)"
+
+  # - exec:
+  #     description: "Setting random string...."
+  #     command: ./helpers.sh
+  #     arguments:
+  #       - random-string
+  #     outputs:
+  #       - name: random_string
+  #         regex: "(.*)"
 
   - az:
       description: "Creating the KeyVault for DataBricks credentials..."
