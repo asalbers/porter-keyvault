@@ -47,16 +47,6 @@ install:
         - "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
         - "{{bundle.parameters.AZURE_GROUP_REGION}}"
 
-  # - exec:
-  #     command: bash
-  #     description: "Setting random string...."
-  #     arguments:
-  #       - ./helpers.sh
-  #       - random-string
-  #     outputs:
-  #       - name: random_string
-  #         regex: "(.*)"
-
   - exec:
       description: "Setting random string...."
       command: ./helpers.sh
