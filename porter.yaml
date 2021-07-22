@@ -167,6 +167,10 @@ parameters:
     description: "The azure resource group to use or create for the cluster resources."
     type: string
     default: hellokeyvault
+  - name: AZURE_GROUP_REGION
+    description: "The azure resource group to use or create for the cluster resources."
+    type: string
+    default: eastus2
   - name: random_string
     description: "The random string used to create resources. This is automatically generated and reused, but can be overridden."
     applyTo:
