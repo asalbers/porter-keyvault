@@ -29,7 +29,6 @@ install:
         username: "'{{bundle.credentials.AZURE_CLIENT_ID}}'"
         password: "'{{bundle.credentials.AZURE_SP_PASSWORD}}'"
         tenant: "'{{bundle.credentials.AZURE_TENANT_ID_OR_DNS}}'"
-
   - az: # setting the subscription
       description: "Setting the Azure subscription...."
       suppress-output: true
@@ -38,7 +37,6 @@ install:
         - "set" 
       flags:
         subscription: "{{ bundle.credentials.AZURE_SUBSCRIPTION_ID}}"
-
   - exec:
       command: bash
       description: "Creating or using the Azure resource group...."
@@ -46,16 +44,14 @@ install:
         - ./upsertGroup.sh
         - "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
         - "{{bundle.parameters.AZURE_GROUP_REGION}}"
-
   - exec:
       description: "Setting random string...."
       command: ./helpers.sh
       arguments:
         - random-string
       outputs:
-        - name: random_string
+        - name: random-string
           regex: "(.*)"
-
   - az:
       description: "Creating the KeyVault for DataBricks credentials..."
       suppress-output: true
@@ -64,7 +60,7 @@ install:
         - create 
       flags:
         location: "eastus2"
-        name: "vat-vault-{{bundle.outputs.random_string}}"
+        name: "vat-vault-{{bundle.outputs.random-string}}"
         resource-group: "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
         enable-rbac-authorization: "true"
       outputs:
