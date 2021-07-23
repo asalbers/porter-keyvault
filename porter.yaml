@@ -4,7 +4,7 @@
 # Uncomment out the sections below to take full advantage of what Porter can do!
 
 name: hello-keyvault
-version: 0.1.1
+version: 0.1.2
 description: "An example Porter configuration"
 # TODO: update the registry to your own, e.g. myregistry
 registry: ghcr.io/asalbers
@@ -51,7 +51,7 @@ install:
         - ./helpers.sh
         - random_string
       outputs:
-        - name: random-string
+        - name: random_string
           regex: "(.*)"
   - az:
       description: "Creating the KeyVault..."
@@ -61,7 +61,7 @@ install:
         - create 
       flags:
         location: "eastus2"
-        name: "vat-vault-{{bundle.outputs.random-string}}"
+        name: "vat-vault-{{bundle.outputs.random_string}}"
         resource-group: "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
         enable-rbac-authorization: "true"
       outputs:
