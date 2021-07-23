@@ -108,13 +108,13 @@ parameters:
     description: "The azure resource group to use or create for the cluster resources."
     type: string
     default: eastus2
-  - name: random_string
+  - name: random-string
     description: "The random string used to create resources. This is automatically generated and reused, but can be overridden."
     applyTo:
       - "upgrade"
       - "uninstall"
     source:
-      output: random_string
+      output: random-string
   - name: keyvault_name
     description: "The name of the created KeyVault."
     source:
@@ -124,7 +124,7 @@ parameters:
       - "uninstall"
 
 outputs:
-  - name: random_string
+  - name: random-string
     description: "The random string to use in generating Azure resources."
     applyTo:
       - "install"
