@@ -4,7 +4,7 @@
 # Uncomment out the sections below to take full advantage of what Porter can do!
 
 name: hello-keyvault
-version: 0.1.0
+version: 0.1.1
 description: "An example Porter configuration"
 # TODO: update the registry to your own, e.g. myregistry
 registry: ghcr.io/asalbers
@@ -45,15 +45,16 @@ install:
         - "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
         - "{{bundle.parameters.AZURE_GROUP_REGION}}"
   - exec:
+      command: bash
       description: "Setting random string...."
-      command: ./helpers.sh
       arguments:
-        - random-string
+        - ./helpers.sh
+        - random_string
       outputs:
         - name: random-string
           regex: "(.*)"
   - az:
-      description: "Creating the KeyVault for DataBricks credentials..."
+      description: "Creating the KeyVault..."
       suppress-output: true
       arguments:
         - keyvault 
@@ -75,11 +76,45 @@ upgrade:
         - upgrade
 
 uninstall:
-  - exec:
-      description: "Uninstall Hello World"
-      command: ./helpers.sh
+  - az: # logging in
+      description: "Logging into Azure..."  
       arguments:
-        - uninstall
+        - login
+      suppress-output: true
+      flags:
+        debug: ""
+        service-principal:
+        username: "'{{bundle.credentials.AZURE_CLIENT_ID}}'"
+        password: "'{{bundle.credentials.AZURE_SP_PASSWORD}}'"
+        tenant: "'{{bundle.credentials.AZURE_TENANT_ID_OR_DNS}}'"
+
+  - az: # setting the subscription
+      description: "Setting the Azure subscription...."
+      suppress-output: true
+      arguments: 
+        - "account" 
+        - "set" 
+      flags:
+        subscription: "{{ bundle.credentials.AZURE_SUBSCRIPTION_ID}}"
+
+  - exec:
+      command: bash
+      description: "Creating or using the Azure resource group...."
+      arguments:
+        - ./upsertGroup.sh
+        - "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
+        - "{{bundle.parameters.AZURE_GROUP_REGION}}"
+
+
+  - az:
+      description: "Creating the KeyVault for DataBricks credentials..."
+      suppress-output: true
+      arguments:
+        - keyvault 
+        - delete 
+      flags:
+        name: "vat-vault-{{bundle.outputs.random_string}}"
+        resource-group: "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
 
 # Below is an example of how to define credentials
 # See https://porter.sh/author-bundles/#credentials
@@ -122,6 +157,10 @@ parameters:
     applyTo:
       - "upgrade"
       - "uninstall"
+  - name: AZURE_GROUP_REGION
+    description: "The azure resource group to use or create for the cluster resources."
+    type: string
+    default: eastus2
 
 outputs:
   - name: random-string
@@ -132,3 +171,51 @@ outputs:
     description: "The keyvault name that is created."
     applyTo:
       - "install"
+
+# The following values are consumed by the Azure Portal and turned into visual blades and UI elements.
+custom:
+  com.azure.creatuidef:
+    blades:
+      Credentials:
+        displayOrder: 1
+        label: Azure Credentials
+      Parameters:
+        displayOrder: 2
+        label: App Parameters
+    elements:
+      - name: AZURE_GROUP_REGION
+        tooltip: "A region for the environment to be created."
+        displayName: "Azure region name"
+        displayOrder: 1
+        uitype: Microsoft.Common.TextBox
+        bladename: Parameters
+      - name: AZURE_CLIENT_ID
+        description: "The client id for the service principal used to automate the bundle's actions."
+        tooltip: A client id with permission to create resources in a tenant.
+        displayName: Client ID
+        displayOrder: 1
+        uitype: Microsoft.Common.PasswordTextBox
+        bladename: Credentials
+      - name: deploymentTime
+        hide: true
+      - name: AZURE_SP_PASSWORD
+        description: "The service principal password that is used to log into Azure inside the bundle."
+        displayOrder: 2
+        tooltip: An Azure SP password or secret for the client ID
+        displayName: Client secret
+        bladename: Credentials
+        uitype: Microsoft.Common.PasswordTextBox
+      - name: AZURE_TENANT_ID_OR_DNS
+        description: "The tenant identity in which the service principal resides."
+        displayOrder: 3
+        tooltip: An Azure tenant id for operational control.
+        displayName: Tenant ID
+        bladename: Credentials
+        uitype: Microsoft.Common.PasswordTextBox
+      - name: AZURE_SUBSCRIPTION_ID
+        description: "The Azure subscription into which to deploy."
+        tooltip: "A subscription for the environment to be created."
+        displayName: "Subscription id"
+        displayOrder: 4
+        uitype: Microsoft.Common.TextBox
+        bladename: Credentials
