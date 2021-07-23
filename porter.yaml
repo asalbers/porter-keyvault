@@ -4,7 +4,7 @@
 # Uncomment out the sections below to take full advantage of what Porter can do!
 
 name: hello-keyvault
-version: 0.1.2
+version: 0.1.1
 description: "An example Porter configuration"
 # TODO: update the registry to your own, e.g. myregistry
 registry: ghcr.io/asalbers
@@ -51,7 +51,7 @@ install:
         - ./helpers.sh
         - random_string
       outputs:
-        - name: random_string
+        - name: random-string
           regex: "(.*)"
   - az:
       description: "Creating the KeyVault..."
@@ -61,7 +61,7 @@ install:
         - create 
       flags:
         location: "eastus2"
-        name: "vat-vault-{{bundle.outputs.random_string}}"
+        name: "vat-vault-{{bundle.outputs.random-string}}"
         resource-group: "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
         enable-rbac-authorization: "true"
       outputs:
@@ -97,23 +97,14 @@ uninstall:
       flags:
         subscription: "{{ bundle.credentials.AZURE_SUBSCRIPTION_ID}}"
 
-  - exec:
-      command: bash
-      description: "Creating or using the Azure resource group...."
-      arguments:
-        - ./upsertGroup.sh
-        - "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
-        - "{{bundle.parameters.AZURE_GROUP_REGION}}"
-
-
   - az:
-      description: "Creating the KeyVault for DataBricks credentials..."
+      description: "Deleting the KeyVault..."
       suppress-output: true
       arguments:
         - keyvault 
         - delete 
       flags:
-        name: "vat-vault-{{bundle.outputs.random_string}}"
+        name: "vat-vault-{{bundle.parameters.random_string}}"
         resource-group: "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
 
 # Below is an example of how to define credentials
