@@ -105,19 +105,6 @@ uninstall:
         - "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
         - "{{bundle.parameters.AZURE_GROUP_REGION}}"
 
-#  - az: 
-#      description: "Creating the operational service principal..."
-#      arguments:
-#        - ad
-#        - sp 
-#        - create-for-rbac
-#      flags: 
-#        name: "ops-databricks"
-#        skip-assignment: "" 
-#        scopes: "/subscriptions/{{bundle.credentials.AZURE_SUBSCRIPTION_ID}}"
-#      outputs:
-#        - name: ops-sp
-#          jsonPath: "$."
 
   - az:
       description: "Creating the KeyVault for DataBricks credentials..."
