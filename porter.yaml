@@ -136,6 +136,7 @@ parameters:
     default: eastus2
   - name: random_string
     description: "The random string used to create resources. This is automatically generated and reused, but can be overridden."
+    type: string
     applyTo:
       - "upgrade"
       - "uninstall"
@@ -143,6 +144,7 @@ parameters:
       output: random_string
   - name: keyvault_name
     description: "The name of the created KeyVault."
+    type: string
     source:
       output: keyvault_name
     applyTo:
@@ -156,10 +158,12 @@ parameters:
 outputs:
   - name: random_string
     description: "The random string to use in generating Azure resources."
+    type: string
     applyTo:
       - "install"
   - name: keyvault_name
     description: "The keyvault name that is created."
+    type: string
     applyTo:
       - "install"
 
