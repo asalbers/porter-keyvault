@@ -53,6 +53,7 @@ install:
       outputs:
         - name: random_string
           regex: "(.*)"
+          type: string
   - az:
       description: "Creating the KeyVault..."
       suppress-output: true
@@ -67,6 +68,7 @@ install:
       outputs:
         - name: "keyvault_name"
           jsonPath: "$.name"
+          type: string
 
 upgrade:
   - exec:
@@ -142,13 +144,11 @@ parameters:
       - "uninstall"
     source:
       output: random_string
-      type: string
   - name: keyvault_name
     description: "The name of the created KeyVault."
     type: string
     source:
       output: keyvault_name
-      type: string
     applyTo:
       - "upgrade"
       - "uninstall"
