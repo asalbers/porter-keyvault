@@ -142,11 +142,13 @@ parameters:
       - "uninstall"
     source:
       output: random_string
+      type: string
   - name: keyvault_name
     description: "The name of the created KeyVault."
     type: string
     source:
       output: keyvault_name
+      type: string
     applyTo:
       - "upgrade"
       - "uninstall"
