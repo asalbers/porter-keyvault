@@ -24,9 +24,9 @@ jobs:
 
   - task: AzureKeyVault@2
     inputs:
-      azureSubscription: $(SUB-NAME)
+      azureSubscription: $(sub-name)
       ConnectedServiceName: 
-      KeyVaultName: "$(KEY-VAULT-NAME)"
+      KeyVaultName: "$(key-vault-name)"
       SecretsFilter: '*'
       RunAsPreJob: false
 
