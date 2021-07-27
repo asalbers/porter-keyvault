@@ -22,8 +22,8 @@ steps:
 
 - task: AzureKeyVault@2
   inputs:
-    azureSubscription: $(AZURE_SUB_ID)
-    KeyVaultName: '$(key-vault-name)'
+    azureSubscription: $(sub-name)
+    KeyVaultName: "$(key-vault-name)"
     SecretsFilter: '*'
     RunAsPreJob: false
 
