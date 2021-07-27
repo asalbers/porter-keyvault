@@ -1,70 +1,73 @@
-steps:
+jobs:
+- job: Linux
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
 
-- task: Bash@3
-  displayName: 'Install Docker'
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Write your commands here
-        sudo apt-get install moby-engine 
-        / moby-cli
-        docker run hello-world
+  - task: Bash@3
+    displayName: 'Install Docker'
+    inputs:
+      targetType: 'inline'
+      script: |
+          sudo apt-get install moby-engine 
+          / moby-cli
+          docker run hello-world
 
-- task: Bash@3
-  displayName: 'Install Porter'
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Write your commands here
-        curl -L https://cdn.porter.sh/latest/install-linux.sh | bash
+  - task: Bash@3
+    displayName: 'Install Porter'
+    inputs:
+      targetType: 'inline'
+      script: |
+          curl -L https://cdn.porter.sh/latest/install-linux.sh | bash
+          export PATH=$PATH:~/.porter
+          porter -v
+
+  - task: AzureKeyVault@2
+    inputs:
+      azureSubscription: $(SUB-NAME)
+      ConnectedServiceName: 
+      KeyVaultName: "$(KEY-VAULT-NAME)"
+      SecretsFilter: '*'
+      RunAsPreJob: false
+
+  - task: Bash@3
+    displayName: 'Deploy hello-keyvault'
+    inputs:
+      targetType: 'inline'
+      script: | 
         export PATH=$PATH:~/.porter
-        porter -v
-
-- task: AzureKeyVault@2
-  inputs:
-    azureSubscription: $(sub-name)
-    KeyVaultName: "$(key-vault-name)"
-    SecretsFilter: '*'
-    RunAsPreJob: false
-
-- task: Bash@3
-  displayName: 'Deploy hello-keyvault'
-  inputs:
-    targetType: 'inline'
-    script: | 
-      export PATH=$PATH:~/.porter
-      echo "Creating json"
-      echo "{
-        "schemaVersion": "1.0.0-DRAFT+b6c701f",
-        "name": "hello-keyvault",
-        "created": "2021-07-23T15:12:33.8781812-05:00",
-        "modified": "2021-07-23T15:12:33.8781812-05:00",
-        "credentials": [
-          {
-            "name": "AZURE_CLIENT_ID",
-            "source": {
-              "env": "AZURE_CLIENT_ID"
+        echo "Creating json"
+        echo "{
+          "schemaVersion": "1.0.0-DRAFT+b6c701f",
+          "name": "hello-keyvault",
+          "created": "2021-07-23T15:12:33.8781812-05:00",
+          "modified": "2021-07-23T15:12:33.8781812-05:00",
+          "credentials": [
+            {
+              "name": "AZURE_CLIENT_ID",
+              "source": {
+                "env": "AZURE_CLIENT_ID"
+              }
+            },
+            {
+              "name": "AZURE_SP_PASSWORD",
+              "source": {
+                "env": "AZURE_SP_PASSWORD"
+              }
+            },
+            {
+              "name": "AZURE_SUBSCRIPTION_ID",
+              "source": {
+                "env": "AZURE_SUB_ID"
+              }
+            },
+            {
+              "name": "AZURE_TENANT_ID_OR_DNS",
+              "source": {
+                "env": "AZURE_TENANT_ID_OR_DNS"
+              }
             }
-          },
-          {
-            "name": "AZURE_SP_PASSWORD",
-            "source": {
-              "env": "AZURE_SP_PASSWORD"
-            }
-          },
-          {
-            "name": "AZURE_SUBSCRIPTION_ID",
-            "source": {
-              "env": "AZURE_SUB_ID"
-            }
-          },
-          {
-            "name": "AZURE_TENANT_ID_OR_DNS",
-            "source": {
-              "env": "AZURE_TENANT_ID_OR_DNS"
-            }
-          }
-        ]
-      }">> hellokeyvault-creds.json
-      echo "Running porter install"
-      porter install andrew-test -c ./hellokeyvault-creds.json -r ghcr.io/asalbers/hello-keyvault:v0.1.2
+          ]
+        }">> hellokeyvault-creds.json
+        echo "Running porter install"
+        porter install andrew-test -c ./hellokeyvault-creds.json -r ghcr.io/asalbers/hello-keyvault:v0.1.2
