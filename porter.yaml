@@ -52,7 +52,7 @@ install:
         - create 
       flags:
         location: "eastus2"
-        name: "vat-vault-{{bundle.outputs.random_string}}"
+        name: "test-vault-{{bundle.outputs.random_string}}"
         resource-group: "{{bundle.parameters.AZURE_RESOURCE_GROUP_NAME}}"
         enable-rbac-authorization: "true"
       outputs:
