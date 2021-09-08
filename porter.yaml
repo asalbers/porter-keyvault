@@ -2,6 +2,7 @@ name: hello-keyvault
 version: 0.1.2
 description: "An example Porter configuration"
 registry: ghcr.io/asalbers
+dockerfile: Dockerfile.tmpl
 
 mixins:
   - exec

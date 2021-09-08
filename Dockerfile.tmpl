@@ -2,8 +2,11 @@ FROM debian:stretch-slim
 
 ARG BUNDLE_DIR
 
-RUN apt-get update && apt-get install -y ca-certificates
+RUN apt-get update && apt-get install -y ca-certificates && apt-get install -y wget
 
+RUN wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb
+RUN dpkg -i packages-microsoft-prod.deb
+RUN apt-get update && apt-get install -y powershell
 # This is a template Dockerfile for the bundle's invocation image
 # You can customize it to use different base images, install tools and copy configuration files.
 #
@@ -19,4 +22,3 @@ RUN apt-get update && apt-get install -y ca-certificates
 
 # Use the BUNDLE_DIR build argument to copy files into the bundle
 COPY . $BUNDLE_DIR
-
